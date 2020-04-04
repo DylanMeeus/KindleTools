@@ -7,11 +7,23 @@ url = "https://www.amazon.com/ap/signin?openid.return_to=https%3A%2F%2Fread.amaz
 def extractUserPass():
     return (sys.argv[1], sys.argv[2])
 
-if __name__ == '__main__':
-    print(url)
-    web = Browser()
+def login(web):
     web.go_to(url)
     up = extractUserPass()
     web.type(up[0], id='ap_mail')
     web.type(up[1], id='ap_password')
     web.press(web.Key.ENTER)
+
+def extractBooks(web):
+    h2s = web.find_elements(tag='h2')
+    books = []
+    for h in h2s:
+        books.append(h.text)
+    return books
+
+
+if __name__ == '__main__':
+    web = Browser(showWindow=False)
+    login(web)
+    books = extractBooks(web)
+    print(books[2])
