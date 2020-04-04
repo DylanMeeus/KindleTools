@@ -21,9 +21,22 @@ def extractBooks(web):
         books.append(h.text)
     return books
 
+def extractHighlights(web, book):
+    web.click(book)
+    elements = web.find_elements(id='highlight')
+    highlights = []
+    for e in elements:
+        highlights.append(e.text)
+    return highlights
+
+
 
 if __name__ == '__main__':
-    web = Browser(showWindow=False)
+    web = Browser(showWindow=True) # easier debugging
     login(web)
     books = extractBooks(web)
-    print(books[2])
+    qs = extractHighlights(web, books[2])
+    for q in qs:
+        print(q)
+    
+
