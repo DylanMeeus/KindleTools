@@ -12,7 +12,8 @@ import (
 type BookHighlights map[string][]string
 
 func main() {
-	hl, err := highlights()
+	fileLocation := os.Args[1]
+	hl, err := highlights(fileLocation)
 	if err != nil {
 		fmt.Printf("something went wrong: %v\n", err)
 		os.Exit(1)
@@ -35,8 +36,8 @@ func randomEntry(b BookHighlights) string {
 }
 
 // highlights parses the json file and stores the entries in the BookHighlights
-func highlights() (BookHighlights, error) {
-	x, err := ioutil.ReadFile("highlights.json")
+func highlights(file string) (BookHighlights, error) {
+	x, err := ioutil.ReadFile(file)
 	if err != nil {
 		return nil, err
 	}
