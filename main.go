@@ -7,6 +7,7 @@ import (
 	"math/rand"
 	"os"
 	"reflect"
+	"time"
 )
 
 type BookHighlights map[string][]string
@@ -24,6 +25,7 @@ func main() {
 
 // randomEntry prints a random highlight and the book that it's highlighted in
 func randomEntry(b BookHighlights) string {
+	rand.Seed(time.Now().UTC().UnixNano())
 	nbooks := len(b)
 	r := rand.Intn(nbooks)
 	keys := reflect.ValueOf(b).MapKeys()
