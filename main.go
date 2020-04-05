@@ -4,20 +4,46 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"math/rand"
+	"os"
+	"reflect"
 )
 
+type BookHighlights map[string][]string
+
 func main() {
-	fmt.Println("hello world")
+	hl, err := highlights()
+	if err != nil {
+		fmt.Printf("something went wrong: %v\n", err)
+		os.Exit(1)
+	}
+	entry := randomEntry(hl)
+	fmt.Printf("%v\n", entry)
+}
+
+// randomEntry prints a random highlight and the book that it's highlighted in
+func randomEntry(b BookHighlights) string {
+	nbooks := len(b)
+	r := rand.Intn(nbooks)
+	keys := reflect.ValueOf(b).MapKeys()
+
+	value := keys[r].Interface()
+	hls := b[value.(string)]
+	r = rand.Intn(len(hls))
+	hl := hls[r]
+	return fmt.Sprintf("%v ~ %v\n", hl, value)
+}
+
+// highlights parses the json file and stores the entries in the BookHighlights
+func highlights() (BookHighlights, error) {
 	x, err := ioutil.ReadFile("highlights.json")
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
-	m := map[string][]string{}
+	var m BookHighlights
 	err = json.Unmarshal(x, &m)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
-	for _, v := range m {
-		fmt.Printf("%v\n", v)
-	}
+	return m, nil
 }
