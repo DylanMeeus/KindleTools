@@ -23,12 +23,8 @@ def extractBooks(web):
     return books
 
 def extractHighlights(web, book):
-    try:
-        web.click(book)
-        elements = web.find_elements(id='highlight')
-    except:
-        print("could not read " + book)
-        return
+    web.click(book)
+    elements = web.find_elements(id='highlight')
     highlights = []
     for e in elements:
         highlights.append(e.text)
@@ -37,14 +33,17 @@ def extractHighlights(web, book):
 
 
 if __name__ == '__main__':
-    web = Browser(showWindow=True) # easier debugging
+    web = Browser(showWindow=False) # easier debugging
     login(web)
     books = extractBooks(web)
     book_highlights = {}
     for book in books:
         print("extracting highlights for " + book)
-        hs = extractHighlights(web, book)
-        book_highlights[book] = hs
+        try:
+            hs = extractHighlights(web, book)
+            book_highlights[book] = hs
+        except:
+            print("could not extract highlights for: " + book)
     print("writing to json file")
     js = json.dumps(book_highlights)
     f = open("highlights.json", 'w')
